@@ -1,0 +1,60 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isUser(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function validText(value, maxLength) {
+      return value is string && value.size() > 0 &&
+        value.size() <= maxLength && value.matches('(?s).*[^\\s].*');
+    }
+
+    match /users/{uid} {
+      allow get: if isUser(uid);
+      allow create: if isUser(uid) &&
+        request.resource.data.keys().hasOnly([
+          'uid', 'firstName', 'lastName', 'role', 'registrationDateTime'
+        ]) &&
+        request.resource.data.uid == uid &&
+        validText(request.resource.data.firstName, 40) &&
+        validText(request.resource.data.lastName, 40) &&
+        request.resource.data.role == 'member' &&
+        request.resource.data.registrationDateTime == request.time;
+    }
+
+    match /messages/{messageId} {
+      function ownProfile() {
+        return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+      }
+
+      function matchesProfile(name) {
+        let profile = ownProfile();
+        return name == profile.firstName + ' ' + profile.lastName;
+      }
+
+      allow read: if signedIn();
+      allow create: if signedIn() &&
+        request.resource.data.keys().hasOnly([
+          'text', 'authorUid', 'authorName', 'createdAt', 'editedAt'
+        ]) &&
+        request.resource.data.authorUid == request.auth.uid &&
+        matchesProfile(request.resource.data.authorName) &&
+        validText(request.resource.data.text, 500) &&
+        request.resource.data.createdAt == request.time &&
+        request.resource.data.editedAt == null;
+
+      allow update: if isUser(resource.data.authorUid) &&
+        request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['text', 'editedAt']) &&
+        validText(request.resource.data.text, 500) &&
+        request.resource.data.editedAt == request.time;
+
+      allow delete: if isUser(resource.data.authorUid);
+    }
+  }
+}

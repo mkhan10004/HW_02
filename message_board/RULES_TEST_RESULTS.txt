@@ -1,0 +1,18 @@
+Firestore Emulator rules test results
+Run November 13, 2026 (America/New_York)
+Command: firebase emulators:exec --project demo-vault-hunt --only firestore "npm --prefix rules-tests test"
+
+✔ signed-out collection read is denied (1278.11983ms)
+✔ another user can read but cannot edit or delete the post (208.676099ms)
+✔ forged author UID and forged display name are denied (80.212741ms)
+✔ owner can create, read, edit and delete with immutable attribution (155.828578ms)
+✔ profiles are private, create-once and have a fixed descriptive role (108.01346ms)
+✔ two transactions with the same operation ID produce one document (944.5908ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3186.33217

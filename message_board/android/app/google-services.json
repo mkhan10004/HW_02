@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "150776221671",
+    "project_id": "messageboard-97077",
+    "storage_bucket": "messageboard-97077.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:150776221671:android:bbd608c890492934083742",
+        "android_client_info": {
+          "package_name": "edu.gsu.message_board"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpxJmeq08ts9tNp35qnhGgOJj1lt6r7rU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
